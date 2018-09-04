@@ -1,0 +1,24 @@
+// Color Variables
+$primary-color: #25b99a;
+$secondary-color: #fff;
+$tertiary-color: #edf0f1;
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+
+// Mixins
+@mixin fill {
+    -webkit-transition: fill 0.2s ease;
+    -moz-transition: fill 0.2s ease;
+    -ms-transition: fill 0.2s ease;
+    -o-transition: fill 0.2s ease;
+    transition: fill 0.2s ease;
+};
+
+@mixin bg {
+    -webkit-transition: background 0.2s ease;
+    -moz-transition: background 0.2s ease;
+    -ms-transition: background 0.2s ease;
+    -o-transition: background 0.2s ease;
+    transition: background 0.2s ease;
+}

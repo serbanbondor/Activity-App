@@ -200,12 +200,12 @@ ul.todo#completed li .buttons button.complete svg .fill{
     fill: $secondary-color;
 }
 
-ul.todo#completed:not(:empty) {
+ul.todo#completed {
     padding: 60px 0 0 0;
     position: relative;
 }
 
-ul.todo#completed:not(:empty):before {
+ul.todo#completed:before {
     content: '';
     width: 150px;
     height: 1px;
@@ -214,4 +214,22 @@ ul.todo#completed:not(:empty):before {
     top: 30px;
     left: 50%;
     margin: 0 0 0 -75px;
+}
+
+ul.todo#completed:empty:after {
+    content: 'You have yet to complete a task!';
+}
+
+ul.todo#todo:empty:after {
+    content: 'You have no task to complete!';
+    margin: 15px 0 0 0;
+}
+
+ul.todo#todo:after,
+ul.todo#completed:after {
+    width: 100%;
+    display: block;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #aaa;
 }

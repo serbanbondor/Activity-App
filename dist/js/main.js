@@ -1,7 +1,16 @@
+// An object with 2 arrays to store tasks
+// Check if there is data in localStorage, if there is data then convert it from json to js object
+let data = (localStorage.getItem('todoList')) ? JSON.parse(localStorage.getItem('todoList')): {
+    todo: [],
+    completed: []
+};
+
 // Remove and complete icons in SVG format
 let removeSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22" style="enable-background:new 0 0 22 22;" xml:space="preserve"><rect class="noFill" width="22" height="22"/><g> <g> <path class="fill" d="M16.1,3.6h-1.9V3.3c0-1.3-1-2.3-2.3-2.3h-1.7C8.9,1,7.8,2,7.8,3.3v0.2H5.9c-1.3,0-2.3,1-2.3,2.3v1.3 c0,0.5,0.4,0.9,0.9,1v10.5c0,1.3,1,2.3,2.3,2.3h8.5c1.3,0,2.3-1,2.3-2.3V8.2c0.5-0.1,0.9-0.5,0.9-1V5.9 C18.4,4.6,17.4,3.6,16.1,3.6z M9.1,3.3c0-0.6,0.5-1.1,1.1-1.1h1.7c0.6,0,1.1,0.5,1.1,1.1v0.2H9.1V3.3z M16.3,18.7 c0,0.6-0.5,1.1-1.1,1.1H6.7c-0.6,0-1.1-0.5-1.1-1.1V8.2h10.6L16.3,18.7L16.3,18.7z M17.2,7H4.8V5.9c0-0.6,0.5-1.1,1.1-1.1h10.2 c0.6,0,1.1,0.5,1.1,1.1V7z"/> </g> <g> <g> <path class="fill" d="M11,18c-0.4,0-0.6-0.3-0.6-0.6v-6.8c0-0.4,0.3-0.6,0.6-0.6s0.6,0.3,0.6,0.6v6.8C11.6,17.7,11.4,18,11,18z"/> </g> <g> <path class="fill" d="M8,18c-0.4,0-0.6-0.3-0.6-0.6v-6.8C7.4,10.2,7.7,10,8,10c0.4,0,0.6,0.3,0.6,0.6v6.8C8.7,17.7,8.4,18,8,18z" /> </g> <g> <path class="fill" d="M14,18c-0.4,0-0.6-0.3-0.6-0.6v-6.8c0-0.4,0.3-0.6,0.6-0.6c0.4,0,0.6,0.3,0.6,0.6v6.8 C14.6,17.7,14.3,18,14,18z"/> </g> </g> </g> </svg>';
 let completeSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22" style="enable-background:new 0 0 22 22;" xml:space="preserve"><rect y="0" class="noFill" width="22" height="22"/><g><path class="fill" d="M9.7,14.4L9.7,14.4c-0.2,0-0.4-0.1-0.5-0.2l-2.7-2.7c-0.3-0.3-0.3-0.8,0-1.1s0.8-0.3,1.1,0l2.1,2.1l4.8-4.8c0.3-0.3,0.8-0.3,1.1,0s0.3,0.8,0,1.1l-5.3,5.3C10.1,14.3,9.9,14.4,9.7,14.4z"/></g></svg>';
 
+// Create the existing tasks
+renderTodoList();
 
 // User clicked on the add button
 // If there is any text inside the item field, add that text to the to-do list
@@ -9,14 +18,64 @@ document.getElementById('add').addEventListener('click', function() {
     let value = document.getElementById('item').value;
     if (value) {
         addItemTodo(value);
-        document.getElementById('item').value = '';
     }    
 });
+
+// Add text to tasks when pressing enter key
+document.getElementById('item').addEventListener('keydown', function(e) {
+    let value = this.value
+    if (e.code === 'Enter' && value) {
+        addItemTodo(value);
+    } 
+});
+
+function addItemTodo(value) {
+    addItemToDOM(value);
+    document.getElementById('item').value = '';
+        
+    // Add strings to the todo array of the data object
+    data.todo.push(value);
+    dataObjectUpdated();
+}
+
+// Add list items to the DOM( create them in html )
+function renderTodoList() {
+    if (!data.todo.length && !data.completed.length) return;
+  
+    for (var i = 0; i < data.todo.length; i++) {
+      var value = data.todo[i];
+      addItemToDOM(value);
+    }
+  
+    for (var j = 0; j < data.completed.length; j++) {
+      var value = data.completed[j];
+      addItemToDOM(value, true);
+    }
+  }
+
+// Store or remove items in localStorage memory
+function dataObjectUpdated() {
+    // Store data as a json
+    localStorage.setItem('todoList', JSON.stringify(data));
+    
+}
 
 // Remove item from the list
 function removeItem() { 
     let item = this.parentNode.parentNode;
     let parent = item.parentNode;
+    let id = parent.id;
+    let value = item.innerText;
+    
+    // Check if the item should be removed from "todo" or "completed" array of the "data" object
+    if (id === 'todo') {
+        // Remove strings from "todo" array 
+        data.todo.splice(data.todo.indexOf(value), 1);
+    } else {
+        // Removestrings from "completed" array 
+        data.completed.splice(data.completed.indexOf(value), 1);
+    }
+    dataObjectUpdated();
 
     parent.removeChild(item);
 }
@@ -26,9 +85,24 @@ function completeItem() {
     let item = this.parentNode.parentNode;
     let parent = item.parentNode;
     let id = parent.id;
-
+    let value = item.innerText;
+    
+    // Check if the item should be added to the "todo" or "completed" array of the "data" object
+    if (id === 'todo') {
+        // Add strings from "todo" array to the "completed" array 
+        data.todo.splice(data.todo.indexOf(value), 1);
+        data.completed.push(value);
+    } else {
+        // Add strings from "completed" array to the "todo" array 
+    data.completed.splice(data.completed.indexOf(value), 1);
+    data.todo.push(value);
+    }
+    dataObjectUpdated();
+    
+    /*
     let target;
 
+    // Check if the item should be added to the completed list or re-added to the to-do list
     if (id === 'todo') {
         // It's a to-do item to be completed
         target = document.getElementById('completed');
@@ -36,14 +110,19 @@ function completeItem() {
         // It's a completed item to be "re-done"
         target = document.getElementById('todo');
     }
+    */
+
+    // Check if the item should be added to the completed list or re-added to the to-do list
+    var target = (id === 'todo') ? document.getElementById('completed'):document.getElementById('todo');
 
     parent.removeChild(item);
     target.insertBefore(item, target.childNodes[0]);
 }
 
 // Add a new item to de to-do list
-function addItemTodo(text) {
-    let list = document.getElementById('todo');
+function addItemToDOM(text, completed) {
+    // Check if it's "todo" or "completed"
+    let list = (completed) ? document.getElementById('completed'):document.getElementById('todo');
 
     let item = document.createElement('li');
     item.innerText = text;

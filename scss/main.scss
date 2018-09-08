@@ -188,14 +188,6 @@ ul.todo#completed li .buttons button.complete svg {
     border: 0px;
 }
 
-ul.todo:not(#completed) li .buttons button.complete:hover svg {
-    background: rgba(37, 185, 154, 0.75);
-}
-
-ul.todo:not(#completed) li .buttons button.complete:hover svg .fill {
-    fill: #fff;
-}
-
 ul.todo#completed li .buttons button.complete svg .fill{
     fill: $secondary-color;
 }
@@ -233,3 +225,5 @@ ul.todo#completed:after {
     font-size: 0.8rem;
     color: #aaa;
 }
+
+@import 'mobile';

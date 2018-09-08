@@ -22,3 +22,9 @@ $tertiary-color: #edf0f1;
     -o-transition: background 0.2s ease;
     transition: background 0.2s ease;
 }
+
+@mixin mediaLg {
+    @media screen and (min-width: 1170px) {
+        @content;
+    }
+}
